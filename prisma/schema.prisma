@@ -13,8 +13,21 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Courses {
+model Course {
   id       String @id @default(uuid())
   title    String
   imageSrc String
+
+  userProgress UserProgress[]
+}
+
+model UserProgress {
+  userId       String @id
+  userName     String @default("User")
+  userImageSrc String @default("/mascot.svg")
+  hearts       Int    @default(5)
+  points       Int    @default(0)
+
+  activeCourseId String
+  activeCourse   Course @relation(fields: [activeCourseId], references: [id], onDelete: Cascade)
 }
