@@ -1,11 +1,11 @@
 "use client";
 
+import { Course } from "@prisma/client";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { upsertUserProgress } from "@/actions/user-progress";
-import { Course } from "@prisma/client";
 import { Card } from "./Card";
 
 type Props = {

@@ -3,9 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
+import { Course } from "@prisma/client";
 
 type Props = {
-  activeCourse: { imageSrc: string; title: string }; // TODO: Replace with DB types
+  activeCourse: Course;
   hearts: number;
   points: number;
   hasActiveSubscription: boolean;
