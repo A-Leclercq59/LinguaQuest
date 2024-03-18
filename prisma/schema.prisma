@@ -19,6 +19,7 @@ model Course {
   imageSrc String
 
   userProgress UserProgress[]
+  units        Unit[]
 }
 
 model UserProgress {
@@ -30,4 +31,65 @@ model UserProgress {
 
   activeCourseId String
   activeCourse   Course @relation(fields: [activeCourseId], references: [id], onDelete: Cascade)
+}
+
+model Unit {
+  id          String @id @default(uuid())
+  title       String
+  description String @db.Text
+  order       Int
+
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  lessons Lesson[]
+}
+
+model Lesson {
+  id    String @id @default(uuid())
+  title String
+  order Int
+
+  unitId String
+  unit   Unit   @relation(fields: [unitId], references: [id], onDelete: Cascade)
+
+  challenges Challenge[]
+}
+
+enum CHALLENGE_TYPE {
+  SELECT
+  ASSIST
+}
+
+model Challenge {
+  id       String         @id @default(uuid())
+  type     CHALLENGE_TYPE
+  question String         @db.Text
+  order    Int
+
+  lessonId String
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  challengeOptions    ChallengeOption[]
+  challengeProgresses ChallengeProgress[]
+}
+
+model ChallengeOption {
+  id       String  @id @default(uuid())
+  text     String  @db.Text
+  correct  Boolean
+  imageSrc String? @db.Text
+  audioSrc String? @db.Text
+
+  challengeId String
+  challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+}
+
+model ChallengeProgress {
+  id        String  @id @default(uuid())
+  userId    String
+  completed Boolean @default(false)
+
+  challengeId String
+  challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
 }
