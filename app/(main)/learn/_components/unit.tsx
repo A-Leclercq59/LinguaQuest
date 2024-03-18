@@ -11,7 +11,7 @@ type Props = {
   lessons: (Lesson & {
     completed: boolean;
   })[];
-  activeLesson: (Lesson & UnitModel) | undefined;
+  activeLesson: (Lesson & { unit: UnitModel }) | undefined;
   activeLessonPercentage: number;
 };
 

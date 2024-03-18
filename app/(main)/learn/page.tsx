@@ -1,23 +1,38 @@
+import { Lesson, Unit as UnitModel } from "@prisma/client";
 import { redirect } from "next/navigation";
 
 import { FeedWrapper } from "@/components/feed-wrapper";
 import { StickyWrapper } from "@/components/sticky-wrapper";
 import { UserProgress } from "@/components/user-progress";
-import { getUnits, getUserProgress } from "@/prisma/queries";
+import {
+  getCourseProgress,
+  getLessonPercentage,
+  getUnits,
+  getUserProgress,
+} from "@/prisma/queries";
 
 import { Header } from "./_components/header";
 import { Unit } from "./_components/unit";
 
 const LearnPage = async () => {
   const userProgressData = getUserProgress();
+  const courseProgressData = getCourseProgress();
+  const lessonPercentageData = getLessonPercentage();
   const unitsData = getUnits();
 
-  const [userProgress, units] = await Promise.all([
-    userProgressData,
-    unitsData,
-  ]);
+  const [userProgress, units, courseProgress, lessonPercentage] =
+    await Promise.all([
+      userProgressData,
+      unitsData,
+      courseProgressData,
+      lessonPercentageData,
+    ]);
 
   if (!userProgress || !userProgress.activeCourse) {
+    redirect("/courses");
+  }
+
+  if (!courseProgress) {
     redirect("/courses");
   }
 
@@ -41,8 +56,12 @@ const LearnPage = async () => {
               title={unit.title}
               description={unit.description}
               lessons={unit.lessons}
-              activeLesson={undefined}
-              activeLessonPercentage={0}
+              activeLesson={
+                courseProgress?.activeLesson as
+                  | (Lesson & { unit: UnitModel })
+                  | undefined
+              }
+              activeLessonPercentage={lessonPercentage}
             />
           </div>
         ))}
