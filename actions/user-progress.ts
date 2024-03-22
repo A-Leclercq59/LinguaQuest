@@ -3,17 +3,11 @@
 import { auth, currentUser } from "@clerk/nextjs";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { z } from "zod";
 
 import { db } from "@/lib/db";
-import { action } from "@/lib/safe-action";
 import { getCourseById, getUserProgress } from "@/prisma/queries";
 
-const schema = z.object({
-  courseId: z.string(),
-});
-
-export const upsertUserProgress = action(schema, async ({ courseId }) => {
+export const upsertUserProgress = async (courseId: string) => {
   const { userId } = await auth();
   const user = await currentUser();
 
@@ -63,4 +57,65 @@ export const upsertUserProgress = action(schema, async ({ courseId }) => {
   revalidatePath("/courses");
   revalidatePath("/learn");
   redirect("/learn");
-});
+};
+
+export const reduceHearts = async (challengeId: string) => {
+  const { userId } = await auth();
+
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+
+  const currentUserProgress = await getUserProgress();
+  // TODO: get user sub
+
+  if (!currentUserProgress) {
+    throw new Error("User Progress not found");
+  }
+
+  const challenge = await db.challenge.findFirst({
+    where: {
+      id: challengeId,
+    },
+  });
+
+  if (!challenge) {
+    throw new Error("Challenge not found");
+  }
+
+  const lessonId = challenge.lessonId;
+
+  const existingChallengeProgress = await db.challengeProgress.findFirst({
+    where: {
+      userId,
+      challengeId,
+    },
+  });
+
+  const isPractice = !!existingChallengeProgress;
+
+  if (isPractice) {
+    return { error: "practice" };
+  }
+
+  // TODO: handle sub
+
+  if (currentUserProgress.hearts === 0) {
+    return { error: "hearts" };
+  }
+
+  await db.userProgress.update({
+    where: {
+      userId,
+    },
+    data: {
+      hearts: Math.max(currentUserProgress.hearts - 1, 0),
+    },
+  });
+
+  revalidatePath("/shop");
+  revalidatePath("/learn");
+  revalidatePath("/quests");
+  revalidatePath("/leaderboard");
+  revalidatePath(`/lesson/${lessonId}`);
+};

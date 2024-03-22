@@ -91,6 +91,20 @@ const main = async () => {
           order: 1,
           question: 'Wich one of the is "the man"?',
         },
+        {
+          id: "2",
+          lessonId: "1", // Nouns
+          type: "ASSIST",
+          order: 2,
+          question: '"the man"',
+        },
+        {
+          id: "3",
+          lessonId: "1", // Nouns
+          type: "SELECT",
+          order: 3,
+          question: 'Wich one of the is "the robot"?',
+        },
       ],
     });
 
@@ -117,6 +131,61 @@ const main = async () => {
           challengeId: "1", // Wich one of the is "the man"?
           imageSrc: "./robot.svg",
           correct: false,
+          text: "el robot",
+          audioSrc: "/es_robot.mp3",
+        },
+      ],
+    });
+
+    await db.challengeOption.createMany({
+      data: [
+        {
+          id: "4",
+          challengeId: "2", // "the man"
+          correct: true,
+          text: "el hombre",
+          audioSrc: "/es_man.mp3",
+        },
+        {
+          id: "5",
+          challengeId: "2", // "the man"
+          correct: false,
+          text: "la mujer",
+          audioSrc: "/es_woman.mp3",
+        },
+        {
+          id: "6",
+          challengeId: "2", // "the man"
+          correct: false,
+          text: "el robot",
+          audioSrc: "/es_robot.mp3",
+        },
+      ],
+    });
+
+    await db.challengeOption.createMany({
+      data: [
+        {
+          id: "7",
+          challengeId: "3", // Wich one of the is "the robot"?
+          imageSrc: "./man.svg",
+          correct: false,
+          text: "el hombre",
+          audioSrc: "/es_man.mp3",
+        },
+        {
+          id: "8",
+          challengeId: "3", // Wich one of the is "the robot"?
+          imageSrc: "./woman.svg",
+          correct: false,
+          text: "la mujer",
+          audioSrc: "/es_woman.mp3",
+        },
+        {
+          id: "9",
+          challengeId: "3", // Wich one of the is "the robot"?
+          imageSrc: "./robot.svg",
+          correct: true,
           text: "el robot",
           audioSrc: "/es_robot.mp3",
         },

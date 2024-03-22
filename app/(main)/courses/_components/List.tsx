@@ -1,8 +1,8 @@
 "use client";
 
 import { Course } from "@prisma/client";
-import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 import { toast } from "sonner";
 
 import { upsertUserProgress } from "@/actions/user-progress";
@@ -15,20 +15,20 @@ type Props = {
 
 export const List = ({ courses, activeCourseId }: Props) => {
   const router = useRouter();
-  const { execute, status } = useAction(upsertUserProgress, {
-    onError() {
-      toast.error("Someting went wrong");
-    },
-  });
+  const [pending, startTransition] = useTransition();
 
   const onClick = (courseId: string) => {
-    if (status === "executing") return;
+    if (pending) return;
 
     if (courseId === activeCourseId) {
       return router.push("/learn");
     }
 
-    execute({ courseId });
+    startTransition(() => {
+      upsertUserProgress(courseId).catch(() =>
+        toast.error("Something went wrong.")
+      );
+    });
   };
 
   return (
@@ -40,7 +40,7 @@ export const List = ({ courses, activeCourseId }: Props) => {
           title={course.title}
           imageSrc={course.imageSrc}
           onClick={onClick}
-          disabled={status === "executing"}
+          disabled={pending}
           active={course.id === activeCourseId}
         />
       ))}
