@@ -89,7 +89,7 @@ const main = async () => {
           lessonId: "1", // Nouns
           type: "SELECT",
           order: 1,
-          question: 'Wich one of the is "the man"?',
+          question: 'Which one of the is "the man"?',
         },
         {
           id: "2",
@@ -188,6 +188,32 @@ const main = async () => {
           correct: true,
           text: "el robot",
           audioSrc: "/es_robot.mp3",
+        },
+      ],
+    });
+
+    await db.challenge.createMany({
+      data: [
+        {
+          id: "4",
+          lessonId: "2", // Verbs
+          type: "SELECT",
+          order: 1,
+          question: 'Wich one of the is "the man"?',
+        },
+        {
+          id: "5",
+          lessonId: "2", // Verbs
+          type: "ASSIST",
+          order: 2,
+          question: '"the man"',
+        },
+        {
+          id: "6",
+          lessonId: "2", // Verbs
+          type: "SELECT",
+          order: 3,
+          question: 'Wich one of the is "the robot"?',
         },
       ],
     });
