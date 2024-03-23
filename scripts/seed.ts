@@ -9,6 +9,7 @@ const main = async () => {
     await db.challenge.deleteMany();
     await db.challengeOption.deleteMany();
     await db.challengeProgress.deleteMany();
+    await db.userSubscription.deleteMany();
 
     await db.course.createMany({
       data: [
