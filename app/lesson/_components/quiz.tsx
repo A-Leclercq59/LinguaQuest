@@ -1,6 +1,10 @@
 "use client";
 
-import { Challenge as ChallengeModel, ChallengeOption } from "@prisma/client";
+import {
+  Challenge as ChallengeModel,
+  ChallengeOption,
+  UserSubscription,
+} from "@prisma/client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
@@ -27,7 +31,7 @@ type Props = {
     completed: boolean;
     challengeOptions: ChallengeOption[];
   })[];
-  userSubscription: any;
+  userSubscription: (UserSubscription & { isActive: boolean }) | null;
 };
 
 export const Quiz = ({

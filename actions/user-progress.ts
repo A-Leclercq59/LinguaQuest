@@ -6,7 +6,11 @@ import { redirect } from "next/navigation";
 
 import { POINTS_TO_REFILL } from "@/constant";
 import { db } from "@/lib/db";
-import { getCourseById, getUserProgress } from "@/prisma/queries";
+import {
+  getCourseById,
+  getUserProgress,
+  getUserSubscription,
+} from "@/prisma/queries";
 
 export const upsertUserProgress = async (courseId: string) => {
   const { userId } = await auth();
@@ -22,10 +26,9 @@ export const upsertUserProgress = async (courseId: string) => {
     throw new Error("Course not found");
   }
 
-  // TODO: Enabled once units and lessons are added
-  /*if (!course.units.length || !course.units[0].lessons.length) {
+  if (!course.units.length || !course.units[0].lessons.length) {
     throw new Error("Course is empty");
-  }*/
+  }
 
   const existingUserProgress = await getUserProgress();
 
@@ -68,7 +71,7 @@ export const reduceHearts = async (challengeId: string) => {
   }
 
   const currentUserProgress = await getUserProgress();
-  // TODO: get user sub
+  const userSubscription = await getUserSubscription();
 
   if (!currentUserProgress) {
     throw new Error("User Progress not found");
@@ -99,7 +102,9 @@ export const reduceHearts = async (challengeId: string) => {
     return { error: "practice" };
   }
 
-  // TODO: handle sub
+  if (userSubscription?.isActive) {
+    return { error: "subscription" };
+  }
 
   if (currentUserProgress.hearts === 0) {
     return { error: "hearts" };
