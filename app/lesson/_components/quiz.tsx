@@ -10,6 +10,7 @@ import { toast } from "sonner";
 
 import { upsertChallengeProgress } from "@/actions/challenge-progress";
 import { reduceHearts } from "@/actions/user-progress";
+import { useHeartsModal } from "@/store/use-hearts-modal";
 
 import { Challenge } from "./challenge";
 import { Footer } from "./footer";
@@ -35,6 +36,8 @@ export const Quiz = ({
   initialPercentage,
   userSubscription,
 }: Props) => {
+  const { open: openHeartsModal } = useHeartsModal();
+
   const { width, height } = useWindowSize();
 
   const router = useRouter();
@@ -100,7 +103,7 @@ export const Quiz = ({
         upsertChallengeProgress(challenge.id)
           .then((response) => {
             if (response?.error === "hearts") {
-              console.error("Missing hearts");
+              openHeartsModal();
               return;
             }
 
@@ -120,7 +123,7 @@ export const Quiz = ({
         reduceHearts(challenge.id)
           .then((response) => {
             if (response?.error === "hearts") {
-              console.error("Missing hearts");
+              openHeartsModal();
               return;
             }
 
