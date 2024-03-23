@@ -4,6 +4,7 @@ import { auth, currentUser } from "@clerk/nextjs";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { POINTS_TO_REFILL } from "@/constant";
 import { db } from "@/lib/db";
 import { getCourseById, getUserProgress } from "@/prisma/queries";
 
@@ -118,4 +119,35 @@ export const reduceHearts = async (challengeId: string) => {
   revalidatePath("/quests");
   revalidatePath("/leaderboard");
   revalidatePath(`/lesson/${lessonId}`);
+};
+
+export const refillHeart = async () => {
+  const currentUserProgress = await getUserProgress();
+
+  if (!currentUserProgress) {
+    throw new Error("User Progress not found");
+  }
+
+  if (currentUserProgress.hearts === 5) {
+    throw new Error("Hearts are already full");
+  }
+
+  if (currentUserProgress.points < POINTS_TO_REFILL) {
+    throw new Error("Not enough points");
+  }
+
+  await db.userProgress.update({
+    where: {
+      userId: currentUserProgress.userId,
+    },
+    data: {
+      hearts: 5,
+      points: currentUserProgress.points - POINTS_TO_REFILL,
+    },
+  });
+
+  revalidatePath("/shop");
+  revalidatePath("/learn");
+  revalidatePath("/quests");
+  revalidatePath("/leaderboard");
 };
