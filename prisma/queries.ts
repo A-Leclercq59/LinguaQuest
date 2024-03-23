@@ -33,7 +33,20 @@ export const getCourseById = cache(async (courseId: string) => {
     where: {
       id: courseId,
     },
-    // TODO: Populate units and lessons
+    include: {
+      units: {
+        orderBy: {
+          order: "asc",
+        },
+        include: {
+          lessons: {
+            orderBy: {
+              order: "asc",
+            },
+          },
+        },
+      },
+    },
   });
 
   return data;
@@ -51,10 +64,19 @@ export const getUnits = cache(async () => {
     where: {
       courseId: userProgress.activeCourseId,
     },
+    orderBy: {
+      order: "asc",
+    },
     include: {
       lessons: {
+        orderBy: {
+          order: "asc",
+        },
         include: {
           challenges: {
+            orderBy: {
+              order: "asc",
+            },
             include: {
               challengeProgresses: {
                 where: {
@@ -244,4 +266,27 @@ export const getUserSubscription = cache(async () => {
     ...data,
     isActive: !!isActive,
   };
+});
+
+export const getTopTenUsers = cache(async () => {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return [];
+  }
+
+  const data = await db.userProgress.findMany({
+    orderBy: {
+      points: "desc",
+    },
+    take: 10,
+    select: {
+      userId: true,
+      userName: true,
+      userImageSrc: true,
+      points: true,
+    },
+  });
+
+  return data;
 });
