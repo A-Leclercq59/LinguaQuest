@@ -113,7 +113,7 @@ const main = async () => {
         {
           id: "1",
           challengeId: "1", // Wich one of the is "the man"?
-          imageSrc: "./man.svg",
+          imageSrc: "/man.svg",
           correct: true,
           text: "el hombre",
           audioSrc: "/es_man.mp3",
@@ -121,7 +121,7 @@ const main = async () => {
         {
           id: "2",
           challengeId: "1", // Wich one of the is "the man"?
-          imageSrc: "./woman.svg",
+          imageSrc: "/woman.svg",
           correct: false,
           text: "la mujer",
           audioSrc: "/es_woman.mp3",
@@ -129,7 +129,7 @@ const main = async () => {
         {
           id: "3",
           challengeId: "1", // Wich one of the is "the man"?
-          imageSrc: "./robot.svg",
+          imageSrc: "/robot.svg",
           correct: false,
           text: "el robot",
           audioSrc: "/es_robot.mp3",
@@ -168,7 +168,7 @@ const main = async () => {
         {
           id: "7",
           challengeId: "3", // Wich one of the is "the robot"?
-          imageSrc: "./man.svg",
+          imageSrc: "/man.svg",
           correct: false,
           text: "el hombre",
           audioSrc: "/es_man.mp3",
@@ -176,7 +176,7 @@ const main = async () => {
         {
           id: "8",
           challengeId: "3", // Wich one of the is "the robot"?
-          imageSrc: "./woman.svg",
+          imageSrc: "/woman.svg",
           correct: false,
           text: "la mujer",
           audioSrc: "/es_woman.mp3",
@@ -184,7 +184,7 @@ const main = async () => {
         {
           id: "9",
           challengeId: "3", // Wich one of the is "the robot"?
-          imageSrc: "./robot.svg",
+          imageSrc: "/robot.svg",
           correct: true,
           text: "el robot",
           audioSrc: "/es_robot.mp3",

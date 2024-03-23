@@ -3,7 +3,7 @@
 import { Challenge as ChallengeModel, ChallengeOption } from "@prisma/client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import Confetti from "react-confetti";
 import { useAudio, useWindowSize } from "react-use";
 import { toast } from "sonner";
@@ -12,6 +12,7 @@ import { upsertChallengeProgress } from "@/actions/challenge-progress";
 import { reduceHearts } from "@/actions/user-progress";
 import { useHeartsModal } from "@/store/use-hearts-modal";
 
+import { usePracticeModal } from "@/store/use-practice-modal";
 import { Challenge } from "./challenge";
 import { Footer } from "./footer";
 import { Header } from "./header";
@@ -37,6 +38,13 @@ export const Quiz = ({
   userSubscription,
 }: Props) => {
   const { open: openHeartsModal } = useHeartsModal();
+  const { open: openPracticeModal } = usePracticeModal();
+
+  useEffect(() => {
+    if (initialPercentage === 100) {
+      openPracticeModal();
+    }
+  }, [initialPercentage, openPracticeModal]);
 
   const { width, height } = useWindowSize();
 
@@ -51,7 +59,9 @@ export const Quiz = ({
 
   const [lessonId] = useState(initialLessonId);
   const [hearts, setHearts] = useState(initialHearts);
-  const [percentage, setPercentage] = useState(initialPercentage);
+  const [percentage, setPercentage] = useState(() => {
+    return initialPercentage === 100 ? 0 : initialPercentage;
+  });
   const [challenges] = useState(initialLessonChallenges);
   const [activeIndex, setActiveIndex] = useState(() => {
     const uncompletedIndex = challenges.findIndex(
